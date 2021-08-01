@@ -1,0 +1,108 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                debug: false
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var game = new Phaser.Game(config);
+    var centerX = window.innerWidth / 2;
+    var centerY =  window.innerHeight / 2;
+    var you = new player(centerX, centerY, 0.1, 0.1)
+
+    function player(x, y, bounce, scale) {
+        this.x = x;
+        this.y = y;
+        this.bounce = bounce;
+        this.scale = scale;
+    }
+
+    function preload ()
+    {
+        this.load.image('copter', 'assets/copter.png');
+        this.load.image('blade', 'assets/blade.png');
+        this.load.image('bullet', 'assets/bullet.png');
+    }
+
+    function create () {
+
+        //making the copter blade
+        blade = this.add.image(you.x, you.y, 'blade');
+        blade.displayWidth = game.config.width * you.scale;
+        blade.displayHeight = blade.displayWidth;
+        //and the copter
+        copter = this.physics.add.image(you.x, you.y, 'copter');
+        copter.setBounce(you.bounce);
+        copter.setCollideWorldBounds(true);
+        copter.displayWidth = game.config.width*you.scale;
+        copter.displayHeight = copter.displayWidth;
+        
+        console.log(you.x, you.y, blade.displayWidth);
+
+    }
+    mX = game.input.mousePointer.x;
+    mY = game.input.mousePointer.y;
+    function update () {
+        //player's x, y
+        const x = you.x;
+        const y = you.y;
+
+        // enemy's x, y
+        const mx = mX;
+        const my = mY;
+
+        const rotation = Phaser.Math.Angle.Between(x, y, mx, my)
+        
+        while (rotation !== 0) {
+            copter.rotation += 0.05
+        }
+        //blade.rotation += 0.1;
+        
+        /*if (cursors.left.isDown) {
+            player.setVelocityX(-160);
+
+        } else if (cursors.right.isDown) {
+            player.setVelocityX(160);
+        
+        } else if (cursors.up.isDown) {
+            player.setVelocityY(160);
+
+        } else if (cursors.down.isDown) {
+            player.setVelocityY(-160);
+
+        } else {
+            player.setVelocityX(0);
+        
+        }*/
+    }
+
+</script>
+
+</body>
+</html>
