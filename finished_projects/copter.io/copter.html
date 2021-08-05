@@ -75,13 +75,10 @@
         //rotate copter
         input = this.input;
         
-        //copter.setCollideWorldBounds(true);
     }
 
     var nextShot = 0;
     function update () {
-        //console.log(copter.x + ', ' + copter.y);
-        //console.log
         blade.rotation += 0.1;
         blade.x = copter.x;
         blade.y = copter.y;
@@ -104,20 +101,22 @@
         } else {
             copter.setVelocityY(0);
         }
-        console.log(this.scene.input.mousePointer.x + this.scene.cameras.main.worldView.x);
         //inputs
         //mouse
         mX = game.input.mousePointer.x;
         mY = game.input.mousePointer.y;
+        mXW = copter.x - centerX + mX
+        mYW = copter.y - centerY + mY
         //rotate copter
         angle = Phaser.Math.Angle.Between(centerX, centerY, mX, mY);
         copter.setRotation(angle);
+        console.log(copter.x + mX, mX);
         if(nextShot < this.time.now){
             if (key.space.isDown) {
                 //for fire again
-                bullet = this.physics.add.image( 0, 0, 'bullet').setScale(game.config.width*you.scale*0.0002);
-                this.physics.moveTo(bullet, mX, mY, 500);
-                nextShot = this.time.now + 200; // wait at least 1 second (1000ms) to next shot
+                bullet = this.physics.add.image( copter.x, copter.y, 'bullet').setScale(game.config.width*you.scale*0.0002);
+                this.physics.moveTo(bullet, mXW, mYW, 500);
+                nextShot = this.time.now + 200;
             }
         }       
     } 
