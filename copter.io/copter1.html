@@ -49,10 +49,6 @@
         this.scale = scale;
     }
 
-    //inputs
-    //mouse
-    var mX = game.input.mousePointer.x;
-    var mY = game.input.mousePointer.y;
     //keyboard
     var key;
     var input;
@@ -62,67 +58,65 @@
         this.load.image('copter', 'assets/copter.png');
         this.load.image('blade', 'assets/blade.png');
         this.load.image('bullet', 'assets/bullet.png');
-        this.load.image('test', 'assets/star.png')
+        this.load.image('wall', 'assets/wall.png');
     }
 
     function create () {
+        this.add.image(0, 0, 'wall').setOrigin(0).setScale(10);
         //copter
-        copter = this.physics.add.image(you.x, you.y, 'copter');
-        copter.displayWidth = game.config.width*you.scale;
-        copter.displayHeight = copter.displayWidth;
+        copter = this.physics.add.image(0, 0, 'copter').setScale(game.config.width*you.scale*0.001);
+        this.cameras.main.startFollow(copter);
         //copter blade
-        blade = this.add.image(copter.x, copter.y, 'blade');
-        blade.displayWidth = game.config.width * you.scale;
-        blade.displayHeight = blade.displayWidth;
+        blade = this.add.image(copter.x, copter.y, 'blade').setScale(game.config.width * you.scale*0.001);
         //bullet
-        bullet = this.physics.add.image( copter.x, copter.y, 'bullet');
-        bullet.displayWidth = game.config.width * you.scale * 0.01;
-        bullet.displayHeight = bullet.displayWidth;
-        
+        bullet = this.physics.add.image( copter.x, copter.y, 'bullet').setScale(game.config.width*you.scale*0.0001);
         //find keyboard
         key = this.input.keyboard.createCursorKeys();
-        worldBounds=this.physics.world.bounds;
         //rotate copter
         input = this.input;
+        
+        //copter.setCollideWorldBounds(true);
     }
-    var worldBounds;
+
     var nextShot = 0;
     function update () {
-        
+        //console.log(copter.x + ', ' + copter.y);
+        //console.log
         blade.rotation += 0.1;
         blade.x = copter.x;
         blade.y = copter.y;
-        
         if (key.left.isDown) {
-            copter.setVelocityX(-160);
+            copter.setVelocityX(-500);
 
         } else if (key.right.isDown) {
-            copter.setVelocityX(160);
+            copter.setVelocityX(500);
         
         } else {
             copter.setVelocityX(0);
         }
 
         if (key.up.isDown) {
-            copter.setVelocityY(-160);
+            copter.setVelocityY(-500);
 
         } else if (key.down.isDown) {
-            copter.setVelocityY(160);
+            copter.setVelocityY(500);
 
         } else {
             copter.setVelocityY(0);
         }
-
+        console.log(this.scene.input.mousePointer.x + this.scene.cameras.main.worldView.x);
+        //inputs
+        //mouse
+        mX = game.input.mousePointer.x;
+        mY = game.input.mousePointer.y;
         //rotate copter
-        let angle=Phaser.Math.Angle.Between(copter.x, copter.y, input.x, input.y);
+        angle = Phaser.Math.Angle.Between(centerX, centerY, mX, mY);
         copter.setRotation(angle);
         if(nextShot < this.time.now){
             if (key.space.isDown) {
                 //for fire again
-                bullet = this.physics.add.image(copter.x, copter.y, 'bullet');
-                bullet.displayWidth = game.config.width * you.scale * 0.1;
-                bullet.displayHeight = bullet.displayWidth;
-                this.physics.moveTo(bullet, input.x, input.y, 500);
+                bullet = this.physics.add.image( 0, 0, 'bullet').setScale(game.config.width*you.scale*0.0002);
+                this.physics.moveTo(bullet, mX, mY, 500);
                 nextShot = this.time.now + 200; // wait at least 1 second (1000ms) to next shot
             }
         }       
