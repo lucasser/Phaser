@@ -1,0 +1,115 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+    const gm = window.innerWidth / 20;
+    console.log(gm)
+    var config = {
+        type: Phaser.AUTO,
+        width: 100 * gm,
+        height: 100 * gm,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                debug: false
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+    //phaser game
+    var game = new Phaser.Game(config);
+
+    //center
+    var centerX = window.innerWidth / 2;
+    var centerY =  window.innerHeight / 2;
+
+    var GcenterX = game.config.width / 2;
+    var GcenterY = game.config.height / 2;
+        
+    //keyboard
+    var key;
+    var input;
+
+    function preload ()
+    {
+        this.load.image('bkrnd', 'assets/background.png')
+        this.load.image('char', 'assets/char.png');
+    }
+
+    function create () {
+        bkrnd = this.add.image(GcenterX, GcenterY, 'bkrnd');
+        bkrnd.displayWidth = game.config.width;
+        bkrnd.scaleY = bkrnd.scaleX;
+
+        ph = this.physics.add.image(100, 100, 'char')
+        console.log(ph.width); 
+        ph.displayWidth = 2 * gm;
+        ph.scaleY = ph.scaleX;
+        //this.cameras.main.startFollow(ph);
+        //input
+            key = this.input.keyboard.createCursorKeys();
+            input = this.input;
+        
+    }
+
+    function update () {
+        
+        if (key.left.isDown) {
+            ph.setVelocityX(-500);
+
+        } else if (key.right.isDown) {
+            ph.setVelocityX(500);
+        
+        } else {
+            ph.setVelocityX(0);
+        }
+
+        if (key.up.isDown) {
+            ph.setVelocityY(-500);
+
+        } else if (key.down.isDown) {
+            ph.setVelocityY(500);
+
+        } else {
+            ph.setVelocityY(0);
+        }
+
+        //mouse
+        //mX = game.input.mousePointer;
+        //mY = game.input.mousePointer;
+        //mXW = copter.x - centerX + mX
+        //mYW = copter.y - centerY + mY
+        //rotate copter
+        //angle = Phaser.Math.Angle.Between(centerX, centerY, mX, mY);
+        //copter.setRotation(angle);
+        
+    } 
+
+    /*function fire_to_mouse (object, img){
+        if(nextShot < this.time.now){
+            if (key.space.isDown) {
+                //for fire again
+                object = this.physics.add.image(copter.x, copter.y, img).setScale(game.config.width*you.scale*0.0002);
+                this.physics.moveTo(object, mXW, mYW, 500);
+                nextShot = this.time.now + 200;
+            }
+        }
+    }*/  
+</script>
+</body>
+</html>
