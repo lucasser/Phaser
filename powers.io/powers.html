@@ -2,11 +2,14 @@
 <html lang="en"> 
 <head> 
     <meta charset="UTF-8" />
-    <title>Making your first Phaser 3 Game - Part 1</title>
+    <title>powers.io</title>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
     <style type="text/css">
         body {
-            margin: 0;
+            margin: 0px;
+            padding: 0px;
+            overflow: hidden;
+            height: 100%;
         }
     </style>
 </head>
@@ -14,11 +17,10 @@
 
 <script type="text/javascript">
     const gm = window.innerWidth / 20;
-    console.log(gm)
     var config = {
         type: Phaser.AUTO,
-        width: 100 * gm,
-        height: 100 * gm,
+        width: 50 * gm,
+        height: 50 * gm,
         physics: {
             default: 'arcade',
             arcade: {
@@ -31,9 +33,9 @@
             update: update
         }
     };
+
     //phaser game
     var game = new Phaser.Game(config);
-
     //center
     var centerX = window.innerWidth / 2;
     var centerY =  window.innerHeight / 2;
@@ -47,43 +49,61 @@
 
     function preload ()
     {
-        this.load.image('bkrnd', 'assets/background.png')
-        this.load.image('char', 'assets/char.png');
+        this.load.image('bkrnd', 'assets/background.png');
+        this.load.image('char', 'assets/char/char.png');
+        this.load.spritesheet('hands', 'assets/char/hands/handG.png', { frameWidth: 100, frameHeight: 92});
     }
 
     function create () {
-        bkrnd = this.add.image(GcenterX, GcenterY, 'bkrnd');
-        bkrnd.displayWidth = game.config.width;
-        bkrnd.scaleY = bkrnd.scaleX;
+        //bkrnd = this.add.image(centerX, centerY, 'bkrnd');
+        //bkrnd.displayWidth = window.innerWidth;
+        //bkrnd.scaleY = bkrnd.scaleX;
 
-        ph = this.physics.add.image(100, 100, 'char')
-        console.log(ph.width); 
-        ph.displayWidth = 2 * gm;
+        hands = this.physics.add.sprite(100, 100, 'hands');
+        hands.displayWidth = ph.displayWidth;
+        hands.scaleY = hands.scaleX;
+        
+        ph = this.physics.add.image(hands.x, hands.y, 'char');
+        ph.displayWidth = gm;
         ph.scaleY = ph.scaleX;
+
+        this.anims.create({
+            key: 'neut',
+            frames: this.anims.generateFrameNumbers('hands', { start: 0, end: 2 }),
+            frameRate: 10,
+            repeat: 1
+        });
         //this.cameras.main.startFollow(ph);
         //input
             key = this.input.keyboard.createCursorKeys();
             input = this.input;
         
     }
-
+    speed = 200;
     function update () {
-        
+        hands.anims.play('neut', true);
+        mX = game.input.mousePointer.x;
+        mY = game.input.mousePointer.y;
+        mXW = ph.x - centerX + mX;
+        mYW = ph.y - centerY + mY;
+        angle = Phaser.Math.Angle.Between(ph.x, ph.y, mX, mY);
+        ph.setRotation(angle - 90);
+        hands.setRotation(angle - 90);
         if (key.left.isDown) {
-            ph.setVelocityX(-500);
+            ph.setVelocityX(-1*speed);
 
         } else if (key.right.isDown) {
-            ph.setVelocityX(500);
+            ph.setVelocityX(speed);
         
         } else {
             ph.setVelocityX(0);
         }
 
         if (key.up.isDown) {
-            ph.setVelocityY(-500);
+            ph.setVelocityY(-1*speed);
 
         } else if (key.down.isDown) {
-            ph.setVelocityY(500);
+            ph.setVelocityY(speed);
 
         } else {
             ph.setVelocityY(0);
@@ -97,7 +117,6 @@
         //rotate copter
         //angle = Phaser.Math.Angle.Between(centerX, centerY, mX, mY);
         //copter.setRotation(angle);
-        
     } 
 
     /*function fire_to_mouse (object, img){

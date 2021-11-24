@@ -3,10 +3,13 @@
 <head> 
     <meta charset="UTF-8" />
     <title>Making your first Phaser 3 Game - Part 1</title>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
     <style type="text/css">
         body {
-            margin: 0;
+            margin: 0px;
+            padding: 0px;
+            overflow: hidden;
+            height: 100%;
         }
     </style>
 </head>
@@ -79,6 +82,22 @@
 
     var nextShot = 0;
     function update () {
+        //mouse
+        mX = game.input.mousePointer.x;
+        mY = game.input.mousePointer.y;
+        mXW = copter.x - centerX + mX;
+        mYW = copter.y - centerY + mY;
+        copterStuff(mX,mY);
+        if(nextShot < this.time.now){
+            if (key.space.isDown) {
+                //for fire again
+                bullet = this.physics.add.image( copter.x, copter.y, 'bullet').setScale(game.config.width*you.scale*0.0002);
+                this.physics.moveTo(bullet, mXW, mYW, 500);
+                nextShot = this.time.now + 200;
+            }
+        }
+    }
+    function copterStuff(mX,mY){
         blade.rotation += 0.1;
         blade.x = copter.x;
         blade.y = copter.y;
@@ -101,25 +120,10 @@
         } else {
             copter.setVelocityY(0);
         }
-        //inputs
-        //mouse
-        mX = game.input.mousePointer.x;
-        mY = game.input.mousePointer.y;
-        mXW = copter.x - centerX + mX
-        mYW = copter.y - centerY + mY
         //rotate copter
         angle = Phaser.Math.Angle.Between(centerX, centerY, mX, mY);
         copter.setRotation(angle);
-        console.log(copter.x + mX, mX);
-        if(nextShot < this.time.now){
-            if (key.space.isDown) {
-                //for fire again
-                bullet = this.physics.add.image( copter.x, copter.y, 'bullet').setScale(game.config.width*you.scale*0.0002);
-                this.physics.moveTo(bullet, mXW, mYW, 500);
-                nextShot = this.time.now + 200;
-            }
-        }       
-    } 
+    }
 </script>
 </body>
 </html>
