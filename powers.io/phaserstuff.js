@@ -24,7 +24,7 @@ var cursors;
 var score = 0;
 var gameOver = false;
 var scoreText;
-var h = game.height;
+var h = game.config.height;
 var w = game.config.width;
 
 var game = new Phaser.Game(config);
