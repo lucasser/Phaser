@@ -19,24 +19,19 @@ function collectStar (player, star){
 
 function hitBomb (player, bomb){
     this.physics.pause();
-
     player.setTint(0xff0000);
-
     player.anims.play('turn');
-
     gameOver = true;
 }
 
-function endOfGame(phasergame){
-    console.log("game ended.");
-    gameend = phasergame.add.image(0, 0, 'gamestart');
-    gameend.displayWidth = w;
-    gameend.displayHeight = h;
-    console.log(gameend.displayHeight,gameend.displayWidth);
+function endOfGame(button, gameend, phasergame){
+    gameend.visible = true;
+    button.visible = true;
+    button.once('pointerup', click, phasergame);
+    console.log("end of game")
 }
 
-function gamestats (player){
-    console.log("game func started");
+function gamestuff (player){
     if (cursors.left.isDown)
     {
         player.setVelocityX(-160);
@@ -60,4 +55,12 @@ function gamestats (player){
     {
         player.setVelocityY(-330);
     }
+}
+
+function click() {
+    console.log("button click");
+    button.visible = false;
+    gameend.visible = false;
+    gameOver = false;
+    this.physics.resume();
 }

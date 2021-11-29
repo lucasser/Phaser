@@ -16,22 +16,25 @@ var config = {
     }
 };
 
+var gameboard = new Phaser.Game(config);
+
 var player;
 var stars;
 var bombs;
 var platforms;
 var cursors;
 var score = 0;
-var gameOver = false;
+var gameOver = true;
 var scoreText;
-var h = game.config.height;
-var w = game.config.width;
-
-var game = new Phaser.Game(config);
+var width = gameboard.config.width;
+var height = gameboard.config.height;
+var centerX = window.innerWidth / 2;
+var centerY =  window.innerHeight / 2;
 
 function preload (){
+    this.load.image('button', 'assets/button.png');
     this.load.image('sky', 'assets/sky.png');
-    this.load.image('gamestart', 'assets/background.png');
+    this.load.image('gamestart', 'assets/platformer.png');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
@@ -39,7 +42,10 @@ function preload (){
 }
 
 function create (){
-    this.add.image(400, 300, 'sky');
+    gameboard.backgroundColor = '#03fca5';
+    sky = this.add.image(centerX, centerY, 'sky');
+    sky.displayWidth = width;
+    sky.displayHeight = height;
     //platforms
         platforms = this.physics.add.staticGroup();
         platforms.create(400, 568, 'ground').setScale(2).refreshBody();
@@ -90,13 +96,15 @@ function create (){
     this.physics.add.collider(bombs, platforms);
     this.physics.add.overlap(player, stars, collectStar, null, this);
     this.physics.add.collider(player, bombs, hitBomb, null, this);
+    gameend = this.add.image(centerX, centerY, 'gamestart');
+    gameend.displayWidth = width;
+    gameend.displayHeight = height;
+    button = this.add.image(centerX, centerY, 'button').setInteractive();
 }
 function update (){
    if (gameOver){
-       console.log(gameOver);
-       endOfGame(this);
+    endOfGame(button, gameend, this);
    } else {
-        console.log(gameOver);
-        game(player);
+        gamestuff(player);
    }
 }
